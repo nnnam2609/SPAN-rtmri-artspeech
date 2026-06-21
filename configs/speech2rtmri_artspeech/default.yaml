@@ -1,0 +1,118 @@
+data:
+  iadi_root: /srv/storage/talc@storage4.nancy/multispeech/corpus/speech_production/iadi
+  dataset_name: ArtSpeech_Database_2
+  path_mappings:
+    - source: /srv/storage/talc@storage4.nancy/multispeech/corpus/speech_production/iadi
+      target: C:/Users/nhnguyen/PhD_A2A/iadi
+  use_registered: true
+  fallback_to_unregistered: true
+  textgrid_priority:
+    - adjusted
+    - DENOISED
+    - original
+    - mocap
+  required_articulators:
+    - upper-lip
+    - lower-lip
+    - tongue
+    - soft-palate-midline
+    - pharynx
+    - epiglottis
+    - arytenoid-cartilage
+    - vocal-folds
+    - upper-incisor
+  require_contours_for_manifest: false
+  fps: 50
+  clip_len: 10
+  clip_stride: 10
+  conditioning_mode: first_frame
+  sync_shift_frames: 0
+  pixel_spacing_mm: 1.62
+  frame_size: 136
+  normalization:
+    lower_percentile: 1.0
+    upper_percentile: 99.0
+    cache_dir: outputs/speech2rtmri_artspeech_cache/normalization_stats
+    max_sampled_frames: null
+
+splits:
+  train:
+    speakers: ["1775", "1777", "1789", "1791"]
+    sessions_by_speaker: {}
+  val:
+    speakers: ["1796"]
+    sessions_by_speaker: {}
+  test:
+    speakers: ["1804"]
+    sessions_by_speaker: {}
+
+audio:
+  encoder: hubert
+  model_name: facebook/hubert-base-ls960
+  embedding_dim: 768
+  pooling: false
+  sample_rate: 16000
+  device: cpu
+  hop_length: 320
+  win_length: 400
+  n_fft: 400
+
+model:
+  channels: 1
+  dim: 32
+  dim_mults: [1, 2, 4, 8]
+  num_sample_steps: 10
+  cond_drop_prob: 0.1
+  sigma_min: 0.002
+  sigma_max: 80.0
+  sigma_data: 0.5
+  rho: 7.0
+  P_mean: -1.2
+  P_std: 1.2
+  S_churn: 80.0
+  S_tmin: 0.05
+  S_tmax: 50.0
+  S_noise: 1.003
+
+train:
+  epochs: 10
+  batch_size: 1
+  gradient_accumulation_steps: 4
+  learning_rate: 0.0001
+  use_amp: true
+  max_train_steps: 200
+  valid_every: 20
+  sample_every: 20
+  checkpoint_every: 50
+  sample_num_steps: null
+  visual_benchmark_count: 4
+  best_checkpoint_metric: visual_ssim
+  resume_checkpoint: null
+  cond_scale: 1.0
+  ignore_time: false
+
+demo:
+  cond_scale: 1.0
+  max_demo_samples: 5
+  sample_num_steps: null
+  sample_selection: head
+
+eval:
+  cond_scale: 1.0
+  sample_num_steps: null
+  sample_selection: evenly_spaced
+  metrics:
+    - ssim
+    - psnr
+    - lpips
+    - fvd
+    - contour_rmse_px
+    - contour_rmse_mm
+    - contour_median_mm
+    - p2cp_rms
+    - temporal_jitter
+
+runtime:
+  output_dir: outputs/speech2rtmri_artspeech
+  reuse_existing_manifests: false
+  seed: 1337

@@ -19,3 +19,9 @@ imagen-span-070823
 checkpoints
 log
 spanpygui
+.venv/
+outputs/
+logs/
+__pycache__/
+.pytest_cache/
+scripts/.generated_oar/

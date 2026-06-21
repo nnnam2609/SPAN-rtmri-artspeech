@@ -1,35 +1,115 @@
-# SPAN-rtmri Audio-Guided Diffusion Model
+# SPAN-rtmri ArtSpeech DB2
 
-## Setup enviroment
-```
-conda env create --file=environments.yml
-conda activate genai
+## Goal
+
+Generate short rtMRI videos from speech audio plus one conditioning MRI frame.
+
+This repo is a cleaned ArtSpeech DB2 adaptation of the Speech2rtMRI / SPAN-rtmri idea.
+The supported code lives in `speech2rtmri_artspeech/`.
+
+## Data
+
+- Dataset: `ArtSpeech_Database_2`
+- Root path in current configs:
+  `/srv/storage/talc@storage4.nancy/multispeech/corpus/speech_production/iadi`
+- Default resolution:
+  `136x136`
+- Default policy:
+  use registered MRI when available and prefer adjusted TextGrids
+
+Expected session layout:
+
+```text
+ArtSpeech_Database_2/<speaker>/<session>/
+├── <speaker>_<session>.wav
+├── *.textgrid
+├── NPY_MR/
+├── inference_contours/
+├── NPY_MR_registered/               optional
+└── inference_contours_registered/   optional
 ```
 
-## Preparing dataset
-Create preprocessed dataset folder
-```
-mkdir ./datasets/preprocessed_dataset/
-```
-Create gifs from original SPAN dataset for training and test
-```
-python create_gifs_dataset.py
-                --path2span /mnt/c/Users/PCM/Dropbox/span
-                --target_dir ./datasets/preprocessed_dataset/
-```
-Create audio embeddings from a pretrained model. Each pretrained model should have seperated target_dir folder.
-```
-python create_audio_embeddings.py --path2span /mnt/c/Users/PCM/Dropbox/span --target_dir ./datasets/preprocessed_dataset/hubert-large --model_name Hubert --model_size large --pretrain_on None
+## Paper And Source
+
+- Paper:
+  `Speech2rtMRI`
+  https://arxiv.org/abs/2409.15525
+- Upstream source:
+  https://github.com/Hong7Cong/SPAN-rtmri
+- Local supported package:
+  `speech2rtmri_artspeech/`
+
+## Demo
+
+Canonical demo video:
+
+<video
+  src="outputs/speech2rtmri_artspeech_full_database_grouille_a100_10h/demo_sessions/demo_sessions_1804_20260416_220233/1804_S14/side_by_side_session.mp4"
+  controls
+  playsinline
+  width="100%">
+</video>
+
+Direct file:
+[`side_by_side_session.mp4`](outputs/speech2rtmri_artspeech_full_database_grouille_a100_10h/demo_sessions/demo_sessions_1804_20260416_220233/1804_S14/side_by_side_session.mp4)
+
+This is the main demo to open first.
+
+## Kept Configs
+
+- `configs/speech2rtmri_artspeech/default.yaml`
+- `configs/speech2rtmri_artspeech/full_database_grouille_a100_10h.yaml`
+
+## Kept Scripts
+
+- `scripts/prepare_speech2rtmri_artspeech_cpu.sh`
+- `scripts/job_train_speech2rtmri_artspeech_full_database_grouille_a100_10h.sh`
+- `scripts/submit_train_speech2rtmri_artspeech_full_database_grouille_a100_10h_oar.sh`
+
+## Minimal Workflow
+
+Prepare manifests and caches on the frontend/login server:
+
+```bash
+./scripts/prepare_speech2rtmri_artspeech_cpu.sh
 ```
 
-## Training
-Train diffusion model, save models to ./checkpoints/ and save samples per epoch to ./gif_samples
+Run the full database job:
+
+```bash
+./scripts/submit_train_speech2rtmri_artspeech_full_database_grouille_a100_10h_oar.sh
 ```
-python imagen-video-training.py 
-                --audio_path ./datasets/preprocessed_dataset/audio_embs 
-                --audio_embed_dim 1024
-                --from_pretrained False
-                --ignore_time False
-                --audio_pooling False
-                --gif_path ./datasets/preprocessed_dataset/train
+
+## Output
+
+Main full-run output root:
+
+```text
+outputs/speech2rtmri_artspeech_full_database_grouille_a100_10h/
 ```
+
+Important subfolders:
+
+```text
+outputs/speech2rtmri_artspeech_full_database_grouille_a100_10h/
+├── manifests/
+├── train/
+├── demo/
+└── eval/
+```
+
+Generated videos are under:
+
+```text
+outputs/speech2rtmri_artspeech_full_database_grouille_a100_10h/demo/demo_<run_id>/<sample_id>/
+├── gt_video.mp4
+├── pred_video.mp4
+└── side_by_side.mp4
+```
+
+
+
+## Notes
+
+- This repo keeps the video-only path.
+- Contour metrics stay optional.
