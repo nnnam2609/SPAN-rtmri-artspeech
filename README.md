@@ -41,13 +41,11 @@ ArtSpeech_Database_2/<speaker>/<session>/
 
 ## Demo
 
-Canonical demo video:
+Canonical demo preview:
 
-[![Play demo video](assets/demo_side_by_side_session.jpg)](https://raw.githubusercontent.com/nnnam2609/SPAN-rtmri-artspeech/main/outputs/speech2rtmri_artspeech_full_database_grouille_a100_10h/demo_sessions/demo_sessions_1804_20260416_220233/1804_S14/side_by_side_session.mp4)
+![Side-by-side rtMRI demo](assets/demo_inline.gif)
 
-Click the preview image to play the mp4 in the browser.
-
-Direct file:
+Full mp4:
 [`side_by_side_session.mp4`](https://raw.githubusercontent.com/nnnam2609/SPAN-rtmri-artspeech/main/outputs/speech2rtmri_artspeech_full_database_grouille_a100_10h/demo_sessions/demo_sessions_1804_20260416_220233/1804_S14/side_by_side_session.mp4)
 
 This is the main demo to open first.

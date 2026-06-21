@@ -1,5 +1,7 @@
 datasets
 *.gif
+!assets/
+!assets/demo_inline.gif
 *.png
 *.mp4
 *.bmp
